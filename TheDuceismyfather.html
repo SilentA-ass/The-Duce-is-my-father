@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>iPhone с Dynamic Island и трансгендерным прогрессбаром и музыкой</title>
+<style>
+  :root {
+    --iphone-width: 430px;
+    --iphone-height: 932px;
+    --corner-radius: 48px;
+    --island-width-closed: 118px;
+    --island-height-closed: 36px;
+    --island-width-open: 320px;
+    --island-height-open: 94px;
+    --primary-color: #14151b;
+    --progress-height: 6px;
+  }
+  
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 60% 20%, #181b20 80%, #000 120%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    perspective: 1200px;
+  }
+  .iphone {
+    position: relative;
+    width: var(--iphone-width);
+    height: var(--iphone-height);
+    border-radius: var(--corner-radius);
+    background: #191a1d;
+    box-shadow:
+      0 10px 40px rgba(0,0,0,0.9),
+      inset 0 0 40px #44484a;
+    overflow: hidden;
+    border: 6px solid #44484a;
+  }
+  .screen {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: calc(var(--iphone-width) - 24px);
+    height: calc(var(--iphone-height) - 24px);
+    border-radius: 40px;
+    background:
+      linear-gradient(120deg, #fff2 6%, #aaa1 20%, transparent 76%),
+      url('https://applescoop.org/image/wallpapers/iphone/iphone-14-pro-stock-hd-4k-trending-iphone-16-top-iphone-16-free-pro-iphone-16-plus-and-iphone-16-pro-max-22-10-2024-1729663223-hd-wallpaper.webp') center/cover no-repeat;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.5);
+  }
+
+  .dynamic-island {
+    position: absolute;
+    top: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: var(--island-width-closed);
+    height: var(--island-height-closed);
+    background: linear-gradient(100deg, var(--primary-color) 80%, #23232c 100%);
+    border-radius: 22px;
+    box-shadow:
+      0 4px 8px rgba(0,0,0,0.6),
+      inset 0 0 6px #2a2a2f,
+      inset 0 1px 1.5px #3e3f47;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      border-radius 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  .dynamic-island.open {
+    width: var(--island-width-open);
+    height: var(--island-height-open);
+    border-radius: 48px;
+    box-shadow:
+      0 8px 12px rgba(0,0,0,0.8),
+      inset 0 0 14px #2e2e33,
+      inset 0 1px 2px #46474d;
+  }
+
+  /* Скрываем старые кружки */
+  .camera, .sensor {
+    display: none;
+  }
+
+  .dynamic-content {
+    display: none;
+    color: #eee;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 1.1px;
+    padding-left: 12px;
+    align-items: center;
+    width: 100%;
+    user-select: none;
+  }
+  .dynamic-island.open .dynamic-content {
+    display: flex;
+    opacity: 1;
+    animation: fadeInContent 0.3s ease forwards;
+  }
+  @keyframes fadeInContent {
+    from {opacity: 0; transform: translateX(10px);}
+    to {opacity: 1; transform: translateX(0);}
+  }
+
+  .song-art {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(0,0,0,0.6);
+    background: #000;
+  }
+  .song-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .song-info {
+    margin-left: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+    padding-right: 12px;
+    padding-left: 4px;
+  }
+  .song-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f5f5f5;
+  }
+  .song-artist {
+    font-size: 14px;
+    color: #c0c0c0;
+  }
+
+  /* Прогрессбар с цветами транс-флага */
+  .progress-bar {
+    position: relative;
+    margin-top: 6px;
+    width: 100%;
+    height: var(--progress-height);
+    background: #444a56;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 0%;
+    background: linear-gradient(
+      90deg,
+      #5BCEFA 0%,   /* голубой */
+      #F5A9B8 25%,  /* розовый */
+      #FFFFFF 50%,  /* белый */
+      #F5A9B8 75%,  /* розовый */
+      #5BCEFA 100%  /* голубой */
+    );
+    border-radius: 3px 0 0 3px;
+    transition: width 0.2s linear;
+  }
+
+  /* Кнопка паузы/плей */
+  .play-pause-btn {
+    margin-left: 12px;
+    background: rgba(255 255 255 / 0.15);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+  }
+  .play-pause-btn:hover {
+    background: rgba(255 255 255 / 0.3);
+  }
+  .play-pause-icon {
+    width: 14px;
+    height: 14px;
+    fill: white;
+  }
+</style>
+</head>
+<body>
+  <div class="iphone" role="main" aria-label="iPhone mockup с песней 9mice - FACE">
+    <div class="screen"></div>
+    <div class="dynamic-island" tabindex="0" aria-label="Dynamic Island: песня 9mice - FACE" role="button" id="dynamicIsland">
+      <div class="dynamic-content">
+        <div class="song-art">
+          <img src="https://distribution.faceit-cdn.net/images/8762697e-cace-4dda-86d3-bb34c2e216ba.jpeg" alt="Обложка песни 9mice - FACE" />
+        </div>
+        <div class="song-info">
+          <div class="song-title">9mice</div>
+          <div class="song-artist">FACE</div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+        <button class="play-pause-btn" aria-label="Пауза/воспроизведение" id="playPauseBtn">
+          <svg class="play-pause-icon" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M8 5v14l11-7z" /> <!-- Значок Play -->
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const dynamicIsland = document.getElementById('dynamicIsland');
+  let isPlaying = false;
+
+  // Создаем аудио элемент
+  const audio = new Audio('https://rus.hitmotop.com/get/music/20240108/9mice_-_FACE_77236621.mp3');
+  audio.preload = 'auto';
+
+  // Элементы управления
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  const progressFill = document.getElementById('progressFill');
+  const playIconPath = 'M8 5v14l11-7z';
+  const pauseIconPath = 'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
+
+  // Функция обновления прогресса
+  function updateProgress() {
+    if (audio.duration > 0) {
+      const progressPercent = (audio.currentTime / audio.duration) * 100;
+      progressFill.style.width = progressPercent + '%';
+    }
+  }
+
+  // Запуск и пауза
+  function togglePlayPause() {
+    if (audio.paused) {
+      audio.play();
+      isPlaying = true;
+      //сменить иконку на паузу
+      playPauseBtn.querySelector('path').setAttribute('d', pauseIconPath);
+    } else {
+      audio.pause();
+      isPlaying = false;
+      //сменить иконку на плей
+      playPauseBtn.querySelector('path').setAttribute('d', playIconPath);
+    }
+  }
+
+  // Слушаем события аудио
+  audio.addEventListener('timeupdate', updateProgress);
+  audio.addEventListener('ended', () => {
+    isPlaying = false;
+    playPauseBtn.querySelector('path').setAttribute('d', playIconPath);
+    progressFill.style.width = '0%';
+  });
+
+  // По наведению начинаем играть, если не играет
+  dynamicIsland.addEventListener('mouseenter', () => {
+    if (!isPlaying) {
+      togglePlayPause();
+      // Открываем остров (добавляем класс open)
+      dynamicIsland.classList.add('open');
+    }
+  });
+
+  // Клик по кнопке для паузы/воспроизведения
+  playPauseBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    togglePlayPause();
+    // Чтобы остров оставался открыт во время игры
+    if (isPlaying) {
+      dynamicIsland.classList.add('open');
+    }
+  });
+
+  // Клик по острову — переключаем открытие/закрытие Dynamic Island, но музыка играет независимо
+  dynamicIsland.addEventListener('click', () => {
+    dynamicIsland.classList.toggle('open');
+  });
+</script>
+</body>
+</html>
